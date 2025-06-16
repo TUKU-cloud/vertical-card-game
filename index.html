@@ -70,10 +70,11 @@
 
     function getCorrectCount(stage, subStage) {
       const total = getTotalStage(stage, subStage);
-      if (total >= 30) return 3;
-      if (total >= 15) return 2;
-      return 1;
-    }
+      if (total >= 31) return 3; // ステージ11-1（total=31）から3枚
+      if (total >= 16) return 2; // ステージ6-1（total=16）から2枚
+      return 1;                  // それ以前は1枚
+      }
+
 
     function getTimeLimit(stage, subStage) {
       const total = getTotalStage(stage, subStage);
