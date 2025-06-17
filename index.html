@@ -70,16 +70,15 @@
 
     function getCorrectCount(stage, subStage) {
       const total = getTotalStage(stage, subStage);
-      if (total >= 31) return 3; // ステージ11-1（total=31）から3枚
-      if (total >= 16) return 2; // ステージ6-1（total=16）から2枚
-      return 1;                  // それ以前は1枚
-      }
-
+      if (total >= 31) return 3;
+      if (total >= 16) return 2;
+      return 1;
+    }
 
     function getTimeLimit(stage, subStage) {
       const total = getTotalStage(stage, subStage);
-      const stepInPhase = total % 15; // 各難易度段階内でのステージ番号（0〜14）
-      const group = Math.floor(stepInPhase / 3); // 3ステージごとに難易度アップ
+      const stepInPhase = total % 15;
+      const group = Math.floor(stepInPhase / 3);
       const base = 10;
       return Math.max(3, base - group);
     }
@@ -180,35 +179,30 @@
     }
 
     function checkAnswer() {
-  const correct = selectedIndexes.every(i => correctIndexes.includes(i)) && selectedIndexes.length === correctIndexes.length;
+      const correct = selectedIndexes.every(i => correctIndexes.includes(i)) && selectedIndexes.length === correctIndexes.length;
 
-  if (correct) {
-    // ✅ ステージ15-3ならゲームクリア演出へ
-    if (stage === 15 && subStage === 3) {
-      setTimeout(() => showSimpleGameClear(), 1500);
-      return;
-    }
-
-    // 通常の正解処理
-    setTimeout(() => {
-      showCorrectEffect(() => {
-        subStage++;
-        if (subStage > 3) {
-          subStage = 1;
-          stage++;
+      if (correct) {
+        if (stage === 15 && subStage === 3) {
+          setTimeout(() => showSimpleGameClear(), 1500);
+          return;
         }
-        showOverlay();
-      });
-    }, 1500);
 
-  } else {
-    // ❌ まちがい
-    setTimeout(() => {
-      showWrongSequence("まちがい！ゲームオーバー");
-    }, 1500);
-  }
-}
-
+        setTimeout(() => {
+          showCorrectEffect(() => {
+            subStage++;
+            if (subStage > 3) {
+              subStage = 1;
+              stage++;
+            }
+            showOverlay();
+          });
+        }, 1500);
+      } else {
+        setTimeout(() => {
+          showWrongSequence("まちがい！ゲームオーバー");
+        }, 1500);
+      }
+    }
 
     function showCorrectEffect(callback) {
       drawAll();
@@ -305,13 +299,12 @@
         ctx.lineWidth = 4;
         ctx.strokeRect(x, y, size, size);
       }
-      // 🔍 選択済みカードの青枠表示
-if (selectedIndexes.includes(cards.indexOf(card))) {
-  ctx.strokeStyle = "blue";
-  ctx.lineWidth = 3;
-  ctx.strokeRect(x + 3, y + 3, size - 6, size - 6);
-}
 
+      if (selectedIndexes.includes(cards.indexOf(card))) {
+        ctx.strokeStyle = "blue";
+        ctx.lineWidth = 3;
+        ctx.strokeRect(x + 3, y + 3, size - 6, size - 6);
+      }
     }
 
     startButton.onclick = () => {
@@ -320,35 +313,49 @@ if (selectedIndexes.includes(cards.indexOf(card))) {
     };
 
     canvas.addEventListener("click", handleClick);
+
     function showSimpleGameClear() {
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "white";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = "red";
-  ctx.font = "bold 48px sans-serif";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText("ゲームクリア！", canvas.width / 2, canvas.height / 2 - 40);
+      ctx.fillStyle = "red";
+      ctx.font = "bold 48px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("ゲームクリア！", canvas.width / 2, canvas.height / 2 - 60);
 
-  const backButton = document.createElement("button");
-  backButton.textContent = "もどる";
-  backButton.style.fontSize = "20px";
-  backButton.style.padding = "10px 20px";
-  backButton.style.position = "absolute";
-  backButton.style.top = "60%";
-  backButton.style.left = "50%";
-  backButton.style.transform = "translateX(-50%)";
-  backButton.style.zIndex = "10";
-  document.body.appendChild(backButton);
+      const backButton = document.createElement("button");
+      backButton.textContent = "もどる";
+      backButton.style.fontSize = "20px";
+      backButton.style.padding = "10px 20px";
+      backButton.style.position = "absolute";
+      backButton.style.top = "65%";
+      backButton.style.left = "50%";
+      backButton.style.transform = "translateX(-50%)";
+      backButton.style.zIndex = "10";
+      document.body.appendChild(backButton);
+      backButton.onclick = () => {
+        document.body.removeChild(backButton);
+        document.body.removeChild(extraButton);
+        stage = 1;
+        subStage = 1;
+        showOverlay();
+      };
 
-  backButton.onclick = () => {
-    document.body.removeChild(backButton);
-    stage = 1;
-    subStage = 1;
-    showOverlay();
-  };
-}
-
+      const extraButton = document.createElement("button");
+      extraButton.textContent = "エクストラゲームにちょうせん";
+      extraButton.style.fontSize = "20px";
+      extraButton.style.padding = "10px 20px";
+      extraButton.style.position = "absolute";
+      extraButton.style.top = "75%";
+      extraButton.style.left = "50%";
+      extraButton.style.transform = "translateX(-50%)";
+      extraButton.style.zIndex = "10";
+      document.body.appendChild(extraButton);
+      extraButton.onclick = () => {
+        window.location.href = "https://tuku-cloud.github.io/vertical-card-game-extra/";
+      };
+    }
   </script>
 </body>
 </html>
